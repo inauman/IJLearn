@@ -10,6 +10,7 @@ public class Main {
     }
 
     public void log(String logMsg){
+        //inc002: fixed log message.
         System.out.println(logMsg);
     }
 }
