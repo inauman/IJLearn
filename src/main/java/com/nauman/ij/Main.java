@@ -8,4 +8,8 @@ public class Main {
     public void greet(String name){
         System.out.println("Hello " + name + "!");
     }
+
+    public void log(String logMsg){
+        System.out.println(logMsg);
+    }
 }
