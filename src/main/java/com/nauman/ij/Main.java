@@ -5,7 +5,7 @@ public class Main {
         System.out.println("Hello world!");
     }
 
-    public void greet(){
-        System.out.println("Hello Word!");
+    public void greet(String name){
+        System.out.println("Hello " + name + "!");
     }
 }

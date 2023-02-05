@@ -4,6 +4,6 @@ public class TestMain {
 
     public static void main(String[] args) {
         Main m = new Main();
-        m.greet();
+        m.greet("Mayesha");
     }
 }
