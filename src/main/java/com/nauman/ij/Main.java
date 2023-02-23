@@ -13,4 +13,11 @@ public class Main {
         //inc002: fixed log message.
         System.out.println(logMsg);
     }
+
+    class Inner {
+
+    }
+
+    Main.Inner mi;
+    Main.InnerX mx;
 }

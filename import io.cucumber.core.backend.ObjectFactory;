@@ -1,0 +1,63 @@
+import io.cucumber.core.backend.ObjectFactory;
+import io.cucumber.core.backend.ObjectFactoryLoader;
+import io.cucumber.core.exception.CucumberException;
+import io.micronaut.context.ApplicationContext;
+import io.micronaut.inject.BeanDefinition;
+import io.micronaut.inject.qualifiers.Qualifiers;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class MicronautObjectFactory implements ObjectFactory {
+    private ApplicationContext applicationContext;
+
+    public MicronautObjectFactory() {
+        applicationContext = ApplicationContext.run();
+    }
+
+    @Override
+    public void start() {
+    }
+
+    @Override
+    public void stop() {
+        applicationContext.stop();
+    }
+
+    @Override
+    public boolean addClass(Class<?> aClass) {
+        return true;
+    }
+
+    @Override
+    public <T> T getInstance(Class<T> aClass) {
+        List<BeanDefinition<T>> beanDefinitions = applicationContext.getBeanDefinitions(aClass, Qualifiers.byStereotype(aClass));
+        if (beanDefinitions.isEmpty()) {
+            throw new CucumberException("No Micronaut bean of type " + aClass + " found.");
+        } else if (beanDefinitions.size() > 1) {
+            throw new CucumberException("Multiple Micronaut beans of type " + aClass + " found.");
+        } else {
+            return applicationContext.getBean(beanDefinitions.get(0));
+        }
+    }
+
+    @Override
+    public <T> List<T> getInstances(Class<T> aClass) {
+        List<BeanDefinition<T>> beanDefinitions = applicationContext.getBeanDefinitions(aClass, Qualifiers.byStereotype(aClass));
+        if (beanDefinitions.isEmpty()) {
+            return super.getInstances(aClass);
+        } else {
+            return beanDefinitions.stream()
+                    .map(applicationContext::getBean)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    public static void main(String[] args) {
+        ObjectFactoryLoader objectFactoryLoader = new ObjectFactoryLoader();
+        ObjectFactory objectFactory = objectFactoryLoader.loadObjectFactory(MicronautObjectFactory.class.getName(), Thread.currentThread().getContextClassLoader());
+        objectFactory.start();
+        MyStepDefinitions myStepDefinitions = objectFactory.getInstance(MyStepDefinitions.class);
+        // ...
+        objectFactory.stop();
+    }
+}
