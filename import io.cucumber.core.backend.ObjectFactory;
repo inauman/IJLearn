@@ -41,16 +41,16 @@ public class MicronautObjectFactory implements ObjectFactory {
     }
 
     @Override
-    public <T> List<T> getInstances(Class<T> aClass) {
-        List<BeanDefinition<T>> beanDefinitions = applicationContext.getBeanDefinitions(aClass, Qualifiers.byStereotype(aClass));
-        if (beanDefinitions.isEmpty()) {
-            return super.getInstances(aClass);
-        } else {
-            return beanDefinitions.stream()
-                    .map(applicationContext::getBean)
-                    .collect(Collectors.toList());
-        }
+public <T> List<T> getInstances(Class<T> type) {
+    List<BeanDefinition<T>> beanDefinitions = applicationContext.getBeanDefinitions(type, Qualifiers.byStereotype(type));
+    if (beanDefinitions.isEmpty()) {
+        return Collections.emptyList();
+    } else {
+        return beanDefinitions.stream()
+                .map(applicationContext::getBean)
+                .collect(Collectors.toList());
     }
+}
 
     public static void main(String[] args) {
         ObjectFactoryLoader objectFactoryLoader = new ObjectFactoryLoader();
